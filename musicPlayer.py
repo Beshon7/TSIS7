@@ -1,44 +1,48 @@
 import pygame
-from sys import exit
+import os
 
 pygame.init()
 
-screen = pygame.display.set_mode((800,800))
-screen.fill('orange')
-pygame.display.set_caption('PythonDesk')
-clock = pygame.time.Clock()
-x = 400
-y = 400
+screen = pygame.display.set_mode((500, 500))
+pygame.display.set_caption("PythonPLayer")
+music = pygame.image.load(r"C:\Users\azim7\OneDrive\Рабочий стол\Music.jpg")
 
-run = False
+music_files = [r"C:\Users\azim7\Downloads\The Weeknd - Is There Someone Else.mp3", r"C:\Users\azim7\Downloads\Drake - Gods Plan.mp3"]
+current_track = 0
 
-while True:
+pygame.mixer.music.load(music_files[current_track])
+
+playing = False
+
+running = True
+while running:
+    screen.blit(music, (0, 0))
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-            
-    ball = pygame.draw.circle(screen, 'blue', center =(x, y), radius=40)
-    
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            x -= 20
-            screen.fill('orange')
-        elif event.key == pygame.K_RIGHT:
-            x += 20
-            screen.fill('orange')
-        elif event.key == pygame.K_UP:
-            y -= 20
-            screen.fill('orange')
-        elif event.key == pygame.K_DOWN:
-            y += 20
-            screen.fill('orange')
-            
-    if 0 >= x: x = 0 
-    if x >= 800: x = 800
-    if 0 >= y: y = 0 
-    if y >= 800: y = 800
-            
-    pygame.display.flip()
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                if playing:
+                    pygame.mixer.music.pause() #probel pauza
+                    playing = False
+                else:
+                    pygame.mixer.music.unpause()
+                    playing = True
+            elif event.key == pygame.K_s:  #s-toktaidy
+                pygame.mixer.music.stop()
+                playing = False
+            elif event.key == pygame.K_n:  #n - kelesi an
+                current_track = (current_track + 1) % len(music_files)
+                pygame.mixer.music.load(music_files[current_track])
+                pygame.mixer.music.play()
+                playing = True
+            elif event.key == pygame.K_p:  #p - aldyngy an
+                current_track = (current_track - 1) % len(music_files)
+                pygame.mixer.music.load(music_files[current_track])
+                pygame.mixer.music.play()
+                playing = True
+
     pygame.display.update()
-    clock.tick(60)
+
+pygame.quit()
